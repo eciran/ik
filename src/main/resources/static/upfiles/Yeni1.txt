@@ -1,0 +1,9 @@
+
+                                      Genel Giriş Çıkış Raporu
+
+                                                                                       Tarih :     01.07.2022
+      Kart No Ad Soyad                          Giriş Tarihi    Giriş   Çıkış Tarihi     Çıkış           Cum
+      0131    MURAT YILANCI                     01.07.2022 Cum  Saati06:40   01.07.2022 Cum   Saati20:56
+      0080    DİLEK ÖNER                        01.07.2022 Cum  06:43   01.07.2022 Cum   19:26
+      0106    TUNCAY  DEMİREL                   01.07.2022 Cum  06:43   01.07.2022 Cum   19:30
+      0107    OLCAY DEMİREL                     01.07.2022 Cum  06:43   01.07.2022 Cum   19:31

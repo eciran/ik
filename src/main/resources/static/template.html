@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Puantaj Tablosu</title>
+
+<link rel="stylesheet" href="/global/css/bootstrap.min.css" >
+<link rel="stylesheet" href="/global/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="/global/css/jquery.dataTables.css"/>
+<link rel="stylesheet" type="text/css" href="/global/css/jquery.dataTables.css">
+<link href="/global/css/fileinput-1.min.css" rel="stylesheet" />
+<link href="/global/css/select2.min.css" rel="stylesheet" />
+
+<script type="text/javascript" src="/global/js/jquery.min.js"></script>
+<script type="text/javascript" src="/global/js/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="/global/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/global/js/fileinput-1.min.js"></script>
+<script type="text/javascript" charset=utf-8 src="/global/js/jquery.dataTables.js"></script>
+<script src="/global/js/dataTables.buttons.min.js" type="text/javascript"></script>    
+<script src="/global/js/pdfmake.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="/global/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="/global/js/buttons.print.min.js"></script>
+<script src="/global/js/select2.min.js"></script>
+<script src="/global/js/sweetalert2.js"></script>
+<script src="/global/js/jszip.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	 var table = $('#myTable').dataTable({		 
+		 "columnDefs": [
+		        {"className": "dt-center", "targets": "_all"}
+		      ],
+		 "scrollX": true,
+		 "dom": 'Bfrtip',
+		 "buttons": [
+    		 {	extend:'excel',
+    		    className: 'btn btn-dark',
+                text: 'Puantajı Excele Aktar',
+	         },
+        ],
+
+	 });
+	 $('#btnUpload').click(async function(){
+			 const { value: file } = await Swal.fire({
+			  title: 'Select image',
+			  input: 'file',
+			  inputAttributes: {
+			    'accept': 'text/plain',
+			    'aria-label': 'Dosya yükle'
+			  }
+			})
+
+			if (file) {
+				const fileType=file.name.split(".");
+				if(file.type=="text/plain" && fileType[1]=="txt"){
+					uploadFile(file);
+				}	
+			}		 
+	 }); 	  
+	 
+	 async function uploadFile(file) {
+		  let formData = new FormData(); 
+		  formData.append("file", file);
+		  let response = await fetch('/upload', {
+		    method: "POST", 
+		    body: formData
+		  }); 
+
+		  if (response.status == 200) {
+			const Toast = Swal.mixin({
+				  toast: true,
+				  position: 'top-end',
+				  showConfirmButton: false,
+				  timer: 3000,
+				  timerProgressBar: true,
+				  didOpen: (toast) => {
+				    toast.addEventListener('mouseenter', Swal.stopTimer)
+				    toast.addEventListener('mouseleave', Swal.resumeTimer)
+				  }
+				})
+
+				Toast.fire({
+				  icon: 'success',
+				  title: 'Dosya Başarıyla Yüklendi'
+				})
+		  }
+		  else{
+			  
+		  }
+		}
+	  function sendAjax(jsonreq) {
+		     $.ajax({
+		     	url: "/FileUploadHandler",
+		         type: 'POST',
+		         dataType: 'json',
+		         data: JSON.stringify(jsonreq),
+		         contentType: 'application/json',
+		         mimeType: 'application/json',
+		         async: true,
+		         success: function (data) {
+		        	 if( jsonreq.params[0] =='legalDocGiden'){
+			        	 if(data != null){
+			        		 Swal.fire({
+	     						  position: 'center',
+	     						  icon: 'info',
+	     						  title: 'Response :',
+	     						  text: data
+		     	         	   });
+			        	 }
+			        	 $('#btnLegalDocGiden').hide();
+			        	 $('#grid_wrapper').hide();
+		        		 $('#table').show();
+		        		 $("#imgLoading").hide();
+		        	 }
+		        	 if( jsonreq.params[0] =='legalDocGelen'){
+			        	 if(data != null){
+			        		 var rsp="";
+			        		 $.each(data, function (index, item) {
+			        				 rsp = rsp+ item+"\n";   
+			        		 });
+			        		 
+			        		 Swal.fire({
+			        			 position: 'center',
+	     						  icon: 'info',
+	     						  title: 'Response :',
+	     						  text:rsp
+	     						  });
+			        	 }
+			        	 else{
+			        		 Swal.fire({
+	     						  position: 'center',
+	     						  icon: 'error',
+	     						  title: 'İşlemi Başarısız : ',
+	     						  text:	data,
+	     						  showConfirmButton:false,
+	     						  timer:1250	 
+	     	         	   });
+			        	 }
+			        	 $('#grid_wrapper').hide();
+		        		 $('#table').show();
+		        		 $("#imgLoading").hide();
+			        	 $('#btnLegalDocGelen').hide();
+		        	 }
+		        	 if( jsonreq.params[0] =='pageroReadExcel'){
+		        		 
+		        				 $('#myTable').dataTable({
+		        			    destroy: true,
+		        			   	data: data,
+		        			    dom: 'Bfrtip',
+		        			    colReorder: true,
+		        			    buttons: [
+	        			    		 {	extend:'excel',
+	        			    		    className: 'btn btn-dark',
+		        		                text: 'Excele Aktar',
+			        		         },
+		        		        ],
+		        			   	columns: [
+		        				    { data: 'id'},
+	        				    	{ data: 'uuid'},
+	        				    	{ data: 'envid'},
+	        				    	{ data: 'envstat'},
+	        				    	{ data: 'aspname'},
+	        				    	{ data: 'acpname'},
+	        				    	{ data: 'crtTst'},	
+	        				    	{ data: 'issueDate'}
+		        				    
+		        					], 
+		        			
+		        			        "columnDefs": [{
+		        			            "targets": '_all',
+		        			        	"defaultContent": ""
+		        			        }],
+		        			       
+		        			});
+		        		
+		        		 $('#grid_wrapper').hide();
+		        		 $('#table').show();
+					     $("#imgLoading").hide();
+		        	}
+		        	else{
+		 				table.fnClearTable( 0 );
+		 				table.fnAddData(data);
+		 				table.fnDraw();
+		 	    	}
+		         }
+		     });
+	  }
+});
+</script>
+
+</head>
+<body> 
+	<div>
+		<button id="btnUpload" style="margin-left:50px;margin-top:20px" class="btn btn-dark">Dosya Yükle</button>
+		<button id="btnPuantaj" style="margin-top:20px" class="btn btn-dark">Puantaj Oluştur</button>
+	</div>
+	 <div id="imgLoading" style="text-align:center ; display: none"><img src="/global/images/loading.gif"/><br /></div>
+	<div id="table" style="margin:50px;" >
+			<table id="myTable" class="display" style="width:100%">
+	   		     <thead>
+	     	       <tr>
+	                <th></th>
+	                 <th>1</th>
+	                  <th>2</th>
+	                   <th>3</th>
+	                    <th>4</th>
+	                     <th>5</th>
+	                      <th>6</th>
+	                       <th>7</th>
+	                        <th>8</th>
+	                         <th>9</th>
+	                          <th>10</th>
+	                           <th>11</th>
+	                            <th>12</th>
+	                             <th>13</th>
+	                              <th>14</th>
+	                               <th>15</th>
+	                                <th>16</th>
+	                                 <th>17</th>
+	                                  <th>18</th>
+	                                   <th>19</th>
+	                                    <th>20</th>
+	                                     <th>21</th>
+	                                      <th>22</th>
+	                                      <th>23</th>
+	                                      <th>24</th>
+	                                      <th>25</th>
+	                                      <th>26</th>
+	                                      <th>27</th>
+	                                      <th>28</th>
+	                                      <th>29</th>
+	                                      <th>30</th>
+	                                      <th>31</th>
+	                                      <th>Mesai</th>
+	           
+	            </tr>
+	        </thead>
+	        
+	     </table>      
+	</div>
+    <div class="container" style="margin-left:40px">
+			<div class="content">
+			   <div id="grid_wrapper" style="display:none;">
+					<table>
+						<tr id="file_upload_tr">
+							<td>
+								<input id="input-1" name="kartik-input-1" type="file" class="file-loading" multiple=false >
+							</td>
+						</tr>
+						<tr id="file_upload_result_tr" style="display:block;">
+							<td colspan="2">
+								<div id="file_upload_result_div">
+									<br>
+									<br>
+									<span id="msg_lbl"></span>
+									<table id="file_upload_result_tbl" class="table">
+									
+									</table>
+								</div>
+							</td>
+						</tr>
+					</table>
+			   </div>                 
+		   </div>
+    </div>
+</body>
+</html>
