@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html
-  lang="tr"
+  lang="en"
   class="light-style layout-menu-fixed"
   dir="ltr"
   data-theme="theme-default"
@@ -14,7 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Giriş - Çıkış Verileri</title>
+    <title>Puantaj Hesaplama</title>
 
     <meta name="description" content="" />
 
@@ -59,7 +59,7 @@
 <script src="/global/js/select2.min.js"></script>
 <script src="/global/js/sweetalert2.js"></script>
 <script src="/global/js/jszip.min.js" type="text/javascript"></script>
-<script src="../assets/vendor/js/helpers.js"></script>
+    <script src="../assets/vendor/js/helpers.js"></script>
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
@@ -75,18 +75,9 @@
 .dt-buttons {
    margin-left:15px;
 }
-.table {
+.dataTables_info{
 	margin-left:10px;
-	text-align:center;
-	justify-content: center;
 }
-.dataTables_length{
-	margin-left:15px;
-}
-#myTable_info{
-	margin-left:15px;
-}
-
     </style>
     <script type="text/javascript">
 $(document).ready(function(){
@@ -95,12 +86,12 @@ $(document).ready(function(){
 		 "columnDefs": [
 		        {"className": "dt-center", "targets": "_all"}
 		      ],
-	     "paging": true,     
+		 "scrollX": true,
 		 "dom": 'Bfrtip',
 		 "buttons": [
     		 {	extend:'excel',
     		    className: 'btn btn-primary disabled',
-                text: 'Verileri Excele Aktar',
+                text: 'Puantajı Excele Aktar',
 	         },
         ],
         "language":{
@@ -118,101 +109,29 @@ $(document).ready(function(){
         },
 
 	 }); 
-	  var sMonth;
-	  var sYear;
-	 $('#btnUpload').click(function(){
+	  
+	 $('#btnPuantaj').click(async function(){		 
 		 sMonth= $( "#selectMonth option:selected" ).attr('value');
-		 sYear= $( "#selectYear option:selected" ).attr('value');
-		 if(sMonth!="0" && sYear!="0"){
-			 var op={};
-			 op["op"]="getPeriodCount";
-			 op["month"]=sMonth;
-			 op["year"]=sYear;
-			 sendAjaxGetPeriodCount(op);
-		 }
-		 else{
-			 Swal.fire({
-				  title:'Dönem Seçilmedi!',
-				  icon:'warning',
-				  text:'Lütfen Ay ve Yıl Seçimi Yapınız',
-				  confirmButtonColor: "#696cff" 
-				})
-		 }
-		 
-	 });
-	 async function upControlFiles(){
-			
-				 const { value: file } = await Swal.fire({
-				  title: 'Dosya Seçiniz',
-				  confirmButtonText:'Yükle',
-				  confirmButtonColor: "#696cff",
-				  input: 'file',
-				  inputAttributes: {
-				    'accept': 'text/plain',
-				    'aria-label': 'Dosya yükle'
-				  }
-				})
-
-				if (file) {
-					const fileType=file.name.split(".");
-					if(file.type=="text/plain" && fileType[1]=="txt"){
-						$('.loading-spinner').css("display","");
-						uploadFile(file,sMonth,sYear);
-					}
-				}
-				 if(file==null){
-					Swal.fire({
-					  title:'Dosya Seçilmedi!',
-					  icon:'error',
-					  showConfirmButton: false,
-					  timer: 700
-					})
-				}				 
-	 	}
-	 $('#btnGetInOutList').click(async function(){
-			sMonth= $( "#selectMonth option:selected" ).attr('value');
 			sYear= $( "#selectYear option:selected" ).attr('value');
-			 if(sMonth!="0" && sYear!="0"){
-			  	  var getInOutList={};
-				  getInOutList["op"]="getInOutList";
-				  getInOutList["month"]=sMonth;
-				  getInOutList["year"]=sYear;
-				  $('.loading-spinner').css("display","");
-				  sendAjaxGetInOutList(getInOutList);
-			 }
-			 else{
+			 if(sMonth!="0" && sYear!="0") {
+				 var op={};
+				 op["op"]="getPeriodCount";
+				 op["year"]=sYear;
+				 op["month"]=sMonth;				
+				 sendAjaxGetPeriodCount(op)
+			}
+			else{
 				 Swal.fire({
 					  title:'Dönem Seçilmedi!',
 					  icon:'warning',
 					  text:'Lütfen Ay ve Yıl Seçimi Yapınız',
 					  confirmButtonColor: "#696cff" 
 					})
-			 }
-	 }); 	  
+			}
 		 
-	 async function uploadFile(file,sMonth,sYear) {
-		  let formData = new FormData(); 
-		  formData.append("file", file);
-		  let response = await fetch('/upload', {
-		    method: "POST", 
-		    body: formData
-		  }); 
-		  
+	 });	  
 		 
-
-		  if (response.status == 200) {
-			  var inOutList={};
-			  inOutList["op"]="updatePuantajLine";
-			  inOutList["month"]=sMonth;
-			  inOutList["year"]=sYear;
-			  sendAjax(inOutList)		  
-		  }
-		  else{
-			  $('.loading-spinner').css("display","none");
-			  errorAlert("Dosya Yükleme");
-		  }
-		}
-	 
+	 	 
 	  async function successAlert(alert){
 		  const Toast = Swal.mixin({
 			  toast: true,
@@ -254,13 +173,12 @@ $(document).ready(function(){
 		     	url: "/updatePuantajLine",
 		         type: 'POST',
 		         data: JSON.stringify(jsonreq),
-		         contentType: "application/json",
 		         success: function (data) {
-		        	if(data!=null && data.length==0){
+		        	if(data!=null && data.lengt==0){
 		        		$('.loading-spinner').css("display","none");
 		   				successAlert("Dosya Yükleme");		        		
 		        	}
-		        	else if(data.length>1){
+		        	if(data.length>1){
 		        		$('.loading-spinner').css("display","none");
 			     		Swal.fire({
 							  title:'Çalışan Bulunamadı',
@@ -285,106 +203,8 @@ $(document).ready(function(){
 						})
 				}
 		     });
-	  }
-	  function tableListAdd(data){
-          var table = $("#myTable").dataTable({
-              destroy: !0,
-              data: data,
-              "dom": 'Bfrtip',
-     		 "buttons": [
-         		 {	extend:'excel',
-         		    className: 'btn btn-primary',
-                     text: 'Verileri Excele Aktar',
-     	         },
-             ],
-             "language":{
-             	"emptyTable": "Tabloda herhangi bir veri mevcut değil",
-             	"info": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
-             	"infoEmpty": "Kayıt Bulunamadı",
-             	 "search": "Ara:",
-             	    "zeroRecords": "Eşleşen kayıt bulunamadı",
-             	 "paginate": {
-             	        "first": "İlk",
-             	        "last": "Son",
-             	        "next": "Sonraki",
-             	        "previous": "Önceki"
-             	    },
-             },
-              columns: [
-                  { data: "employeeCode.employeeCode" },
-                  { data: "",
-                	  render:function (e, t, n){
-                		  if(n!=null){
-                			  var ret;
-                			  if(n.employeeCode.employeeSecondName!=null){
-                			 	 ret= n.employeeCode.employeeName+" "+n.employeeCode.employeeSecondName+" "+n.employeeCode.employeeLastName;
-                			  }
-                			  else{
-                				  ret= n.employeeCode.employeeName+" "+n.employeeCode.employeeLastName; 
-                			  }                			  
-                			  return ret;
-                		  }
-                	  }
-                  },
-                  { data: "checkInTime",
-                	  render:function (e, t, n){
-                		  if(n!=null){                 			 
-                			 const time= e.split("T");
-                			 return time[0]+" "+n.checkInHour;
-                		  }
-                	  }
-                  },
-                  { data: "checkOutTime",
-                	  render:function (e, t, n){
-                		  if(n!=null){
-                			 const time= e.split("T");
-                			 return time[0]+" "+n.checkOutHour;						 	
-                		  }                			  
-                	  }
-                  },
-                  { data: "checkDate" },
-                  { data: "month" },
-                  { data: "year" }
-            
-              ],
-              columnDefs: [{ targets: "_all", defaultContent: "" }],
-          });
-       }
-	  
-	  function sendAjaxGetInOutList(jsonreq) {
-		     $.ajax({
-		     	url: "/getInOutList",
-		         type: 'POST',
-		         data: JSON.stringify(jsonreq),
-		         contentType: "application/json",
-		         success: function (data) {
-		        	if(data!=null && data.length>0){
-		        		$('.loading-spinner').css("display","none");
-		   				tableListAdd(data);	        		
-		        	}		        	
-		        	else{
-		 				table.fnClearTable( 0 );
-		 				table.fnDraw();
-		 				$('.loading-spinner').css("display","none");
-		 				Swal.fire({
-							  title:'Veri Bulunamadı',
-							  text:'Seçilen tarihler arasında veri bulunamadı',
-							  icon:'warning',
-							  confirmButtonColor: "#696cff" 
-							})
-		 	    	}
-		         },
-		     	error: function (data) {
-		     		$('.loading-spinner').css("display","none");
-		     		Swal.fire({
-						  title:'HATA',
-						  text:'Lütfen Tekrar Deneyin',
-						  icon:'error',
-						  confirmButtonColor: "#696cff" 
-						})
-				}
-		     });
-	  }
+		    
+	}
 	  function sendAjaxGetPeriodCount(jsonreq){
 		  $.ajax({
 		     	url: "/getPeriodCount",
@@ -392,37 +212,30 @@ $(document).ready(function(){
 		         data: JSON.stringify(jsonreq),
 		         contentType: "application/json",
 		         success: function (data) { 
-		        	 if(data!="0"){
+		        	 if(data=="0"){
 		        		 Swal.fire({
-							  title:'Listede Kayıt Mevcut',
-							  text:'Yüklenmek istenen döneme daha önceden veri yüklenmiş.Önceki veriler silinecektir.Devam etmek istiyor musunuz?',
+							  title:'Listede Kayıt Mevcut Değil',
+							  text:'Puantaj oluşturulmak istenen döneme ait veri bulunamadı. Lütfen veri yükleme işlemini tamamladıktan sonra devam ediniz.',
 							  icon:'warning',
 							  showCancelButton: true,
-							  confirmButtonText: "Devam Et",
+							  confirmButtonText: "Dosya yükle",
 							  confirmButtonColor: "#696cff",
 							  cancelButtonColor:  "#696cff",
 							}).then((result) => {
 								  if (result.isConfirmed) {
-								    upControlFiles();
-								  } else{
-									    Swal.fire({
-									    	title:'Yükleme İşlemi iptal edildi',
-									    	icon:'warning',
-									    	showConfirmButton: false,
-								    	    timer: 700
-									    })
-								    }								  
+								   	window.location.replace("/uploadFiles.html");
+								  } 							  
 							});
 		        		 
 		        	 }else{
-		        		 upControlFiles();
+		        		 // createPuantaj();
 		        	 }
 		         },
 		  		 error:{
 		  			 
 		  		 }
 			});
-	  }
+}
 });
 </script>
   </head>
@@ -509,13 +322,13 @@ $(document).ready(function(){
                 <div data-i18n="Analytics">Anasayfa</div>
               </a>
             </li>
-             <li class="menu-item active">
+           <li class="menu-item">
               <a href="uploadFiles.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-file-txt"></i>
                 <div data-i18n="Tables">Dosya Yükleme</div>
               </a>
             </li>
-             <li class="menu-item">
+             <li class="menu-item active">
               <a href="puantaj.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-calculator"></i>
                 <div data-i18n="Tables">Puantaj Hesaplama</div>
@@ -841,7 +654,7 @@ $(document).ready(function(){
             <!-- Content -->
 				
             <div class="container-xxl flex-grow-1 container-p-y">
-            <div style="margin-bottom: 10px">
+                 <div style="margin-bottom: 10px">
 				  <div class="row">
 				    <div class="col">
 				    <label for="selectMonth" class="form-label">Ay Seçiniz</label>
@@ -871,9 +684,8 @@ $(document).ready(function(){
 				    </div>
 				  </div>
 			</div>
-             <div style="margin-bottom:10px">
-				<button id="btnUpload" type="button" class="btn btn-primary">Dosya Yükle</button>
-				<button id="btnGetInOutList" type="button" class="btn btn-primary">Giriş-Çıkış Verilerini Getir</button>			
+             <div style="margin-bottom:10px">		
+				<button id="btnPuantaj" type="button" class="btn btn-primary"">Puantaj Oluştur</button>
 			</div>
               <!-- Responsive Table -->
               <div class="card">
@@ -882,13 +694,41 @@ $(document).ready(function(){
                   <table class="table card-table" id="myTable">
                     <thead>
                       <tr class="text-nowrap">
-                         <th>Kod</th>
-                         <th>İsim-Soyisim</th>
-	                 	 <th>Giriş Tarihi</th>
-	                 	 <th>Çıkış Tarihi</th>
-	                  	 <th>Gün</th>
-	                     <th>Ay</th>
-	                     <th>Yıl</th>
+                        <th>#</th>
+                         <th></th>
+	                 <th>1</th>
+	                  <th>2</th>
+	                   <th>3</th>
+	                    <th>4</th>
+	                     <th>5</th>
+	                      <th>6</th>
+	                       <th>7</th>
+	                        <th>8</th>
+	                         <th>9</th>
+	                          <th>10</th>
+	                           <th>11</th>
+	                            <th>12</th>
+	                             <th>13</th>
+	                              <th>14</th>
+	                               <th>15</th>
+	                                <th>16</th>
+	                                 <th>17</th>
+	                                  <th>18</th>
+	                                   <th>19</th>
+	                                    <th>20</th>
+	                                     <th>21</th>
+	                                      <th>22</th>
+	                                      <th>23</th>
+	                                      <th>24</th>
+	                                      <th>25</th>
+	                                      <th>26</th>
+	                                      <th>27</th>
+	                                      <th>28</th>
+	                                      <th>29</th>
+	                                      <th>30</th>
+	                                      <th>31</th>
+	                                      <th>Mesai</th>
+	           
                       </tr>
                     </thead>
                     <tbody>
