@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html
-  lang="en"
+  lang="tr"
   class="light-style layout-menu-fixed"
   dir="ltr"
   data-theme="theme-default"
@@ -14,7 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Puantaj Hesaplama</title>
+    <title>Giriş - Çıkış Verileri</title>
 
     <meta name="description" content="" />
 
@@ -59,7 +59,7 @@
 <script src="/global/js/select2.min.js"></script>
 <script src="/global/js/sweetalert2.js"></script>
 <script src="/global/js/jszip.min.js" type="text/javascript"></script>
-    <script src="../assets/vendor/js/helpers.js"></script>
+<script src="../assets/vendor/js/helpers.js"></script>
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
@@ -75,9 +75,18 @@
 .dt-buttons {
    margin-left:15px;
 }
-.dataTables_info{
+.table {
 	margin-left:10px;
+	text-align:center;
+	justify-content: center;
 }
+.dataTables_length{
+	margin-left:15px;
+}
+#myTable_info{
+	margin-left:15px;
+}
+
     </style>
     <script type="text/javascript">
 $(document).ready(function(){
@@ -111,46 +120,54 @@ $(document).ready(function(){
 	 }); 
 	  var sMonth;
 	  var sYear;
-	 $('#btnUpload').click(async function(){
-		sMonth= $( "#selectMonth option:selected" ).attr('value');
-		sYear= $( "#selectYear option:selected" ).attr('value');
-		 if(sMonth!="0" && sYear!="0"){
-			 const { value: file } = await Swal.fire({
-			  title: 'Dosya Seçiniz',
-			  confirmButtonText:'Yükle',
-			  confirmButtonColor: "#696cff",
-			  input: 'file',
-			  inputAttributes: {
-			    'accept': 'text/plain',
-			    'aria-label': 'Dosya yükle'
-			  }
-			})
+	 $('#btnUpload').click(function(){
+		 sMonth= $( "#selectMonth option:selected" ).attr('value');
+		 sYear= $( "#selectYear option:selected" ).attr('value');	
+		 var op={};
+		 op["op"]="getPeriodCount";
+		 op["month"]=sMonth;
+		 op["year"]=sYear;
+		 sendAjaxGetPeriodCount(op);	
+	 });
+	 async function upControlFiles(){
+			sMonth= $( "#selectMonth option:selected" ).attr('value');
+			sYear= $( "#selectYear option:selected" ).attr('value');
+			 if(sMonth!="0" && sYear!="0"){
+				 const { value: file } = await Swal.fire({
+				  title: 'Dosya Seçiniz',
+				  confirmButtonText:'Yükle',
+				  confirmButtonColor: "#696cff",
+				  input: 'file',
+				  inputAttributes: {
+				    'accept': 'text/plain',
+				    'aria-label': 'Dosya yükle'
+				  }
+				})
 
-			if (file) {
-				const fileType=file.name.split(".");
-				if(file.type=="text/plain" && fileType[1]=="txt"){
-					$('.loading-spinner').css("display","");
-					uploadFile(file,sMonth,sYear);
+				if (file) {
+					const fileType=file.name.split(".");
+					if(file.type=="text/plain" && fileType[1]=="txt"){
+						$('.loading-spinner').css("display","");
+						uploadFile(file,sMonth,sYear);
+					}
 				}
-			}
-			 if(file==null){
-				Swal.fire({
-				  title:'Dosya Seçilmedi!',
-				  icon:'error',
-				  confirmButtonColor: "#696cff" 
-				})
-			}	
-		 }
-		 else{
-			 Swal.fire({
-				  title:'Dönem Seçilmedi!',
-				  icon:'warning',
-				  text:'Lütfen Ay ve Yıl Seçimi Yapınız',
-				  confirmButtonColor: "#696cff" 
-				})
-		 }
-		 }); 	  
-	 
+				 if(file==null){
+					Swal.fire({
+					  title:'Dosya Seçilmedi!',
+					  icon:'error',
+					  confirmButtonColor: "#696cff" 
+					})
+				}	
+			 }
+			 else{
+				 Swal.fire({
+					  title:'Dönem Seçilmedi!',
+					  icon:'warning',
+					  text:'Lütfen Ay ve Yıl Seçimi Yapınız',
+					  confirmButtonColor: "#696cff" 
+					})
+			 }
+	 	}
 	 $('#btnGetInOutList').click(async function(){
 			sMonth= $( "#selectMonth option:selected" ).attr('value');
 			sYear= $( "#selectYear option:selected" ).attr('value');
@@ -159,6 +176,7 @@ $(document).ready(function(){
 				  getInOutList["op"]="getInOutList";
 				  getInOutList["month"]=sMonth;
 				  getInOutList["year"]=sYear;
+				  $('.loading-spinner').css("display","");
 				  sendAjaxGetInOutList(getInOutList);
 			 }
 			 else{
@@ -169,7 +187,7 @@ $(document).ready(function(){
 					  confirmButtonColor: "#696cff" 
 					})
 			 }
-			 }); 	  
+	 }); 	  
 		 
 	 async function uploadFile(file,sMonth,sYear) {
 		  let formData = new FormData(); 
@@ -267,6 +285,71 @@ $(document).ready(function(){
 				}
 		     });
 	  }
+	  function tableListAdd(data){
+          var table = $("#myTable").dataTable({
+              destroy: !0,
+              data: data,
+              "dom": 'Bfrtip',
+     		 "buttons": [
+         		 {	extend:'excel',
+         		    className: 'btn btn-primary',
+                     text: 'Verileri Excele Aktar',
+     	         },
+             ],
+             "language":{
+             	"emptyTable": "Tabloda herhangi bir veri mevcut değil",
+             	"info": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
+             	"infoEmpty": "Kayıt Bulunamadı",
+             	 "search": "Ara:",
+             	    "zeroRecords": "Eşleşen kayıt bulunamadı",
+             	 "paginate": {
+             	        "first": "İlk",
+             	        "last": "Son",
+             	        "next": "Sonraki",
+             	        "previous": "Önceki"
+             	    },
+             },
+              columns: [
+                  { data: "employeeCode.employeeCode" },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  var ret;
+                			  if(n.employeeCode.employeeSecondName!=null){
+                			 	 ret= n.employeeCode.employeeName+" "+n.employeeCode.employeeSecondName+" "+n.employeeCode.employeeLastName;
+                			  }
+                			  else{
+                				  ret= n.employeeCode.employeeName+" "+n.employeeCode.employeeLastName; 
+                			  }                			  
+                			  return ret;
+                		  }
+                	  }
+                  },
+                  { data: "checkInTime",
+                	  render:function (e, t, n){
+                		  if(n!=null){                 			 
+                			 const time= e.split("T");
+                			 return time[0]+" "+n.checkInHour;
+                		  }
+                	  }
+                  },
+                  { data: "checkOutTime",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			 const time= e.split("T");
+                			 return time[0]+" "+n.checkOutHour;						 	
+                		  }                			  
+                	  }
+                  },
+                  { data: "checkDate" },
+                  { data: "month" },
+                  { data: "year" }
+            
+              ],
+              columnDefs: [{ targets: "_all", defaultContent: "" }],
+          });
+       }
+	  
 	  function sendAjaxGetInOutList(jsonreq) {
 		     $.ajax({
 		     	url: "/getInOutList",
@@ -276,24 +359,62 @@ $(document).ready(function(){
 		         success: function (data) {
 		        	if(data!=null && data.length>0){
 		        		$('.loading-spinner').css("display","none");
-		   					        		
+		   				tableListAdd(data);	        		
 		        	}		        	
 		        	else{
 		 				table.fnClearTable( 0 );
-		 				table.fnAddData(data);
 		 				table.fnDraw();
+		 				$('.loading-spinner').css("display","none");
+		 				Swal.fire({
+							  title:'Veri Bulunamadı',
+							  text:'Seçilen tarihler arasında veri bulunamadı',
+							  icon:'info',
+							  confirmButtonColor: "#696cff" 
+							})
 		 	    	}
 		         },
 		     	error: function (data) {
 		     		$('.loading-spinner').css("display","none");
 		     		Swal.fire({
 						  title:'HATA',
-						  text:data.'Lütfen Tekrar Deneyin',
+						  text:'Lütfen Tekrar Deneyin',
 						  icon:'error',
 						  confirmButtonColor: "#696cff" 
 						})
 				}
 		     });
+	  }
+	  function sendAjaxGetPeriodCount(jsonreq){
+		  $.ajax({
+		     	url: "/getPeriodCount",
+		         type: 'POST',
+		         data: JSON.stringify(jsonreq),
+		         contentType: "application/json",
+		         success: function (data) { 
+		        	 if(data.length!="0"){
+		        		 Swal.fire({
+							  title:'Listede Kayıt Mevcut',
+							  text:'Yüklenmek istenen döneme daha önceden veri yüklenmiş.Devam etmek istiyor musunuz?',
+							  icon:'info',
+							  showCancelButton: true,
+							  confirmButtonColor: "#696cff",
+							  cancelButtonColor:  "#696cff",
+							}).then((result) => {
+								  if (result.isConfirmed) {
+								    upControlFiles();
+								  } else{
+								    Swal.fire('Yükleme İşlemi iptal edildi', '', 'info')
+								  }
+							});
+		        		 
+		        	 }else{
+		        		 upControlFiles();
+		        	 }
+		         },
+		  		 error:{
+		  			 
+		  		 }
+			});
 	  }
 });
 </script>
@@ -725,7 +846,7 @@ $(document).ready(function(){
 	                       <option value="4">Nisan</option>
 	                       <option value="5">Mayıs</option>
 	                       <option value="6">Haziran</option>
-						   <option value="">Temmuz</option>
+						   <option value="7">Temmuz</option>
 						   <option value="8">Ağustos</option>
 						   <option value="9">Eylül</option>
 						   <option value="10">Ekim</option>
@@ -754,7 +875,7 @@ $(document).ready(function(){
                   <table class="table card-table" id="myTable">
                     <thead>
                       <tr class="text-nowrap">
-                         <th>Çalışan Kodu</th>
+                         <th>Kod</th>
                          <th>İsim-Soyisim</th>
 	                 	 <th>Giriş Tarihi</th>
 	                 	 <th>Çıkış Tarihi</th>

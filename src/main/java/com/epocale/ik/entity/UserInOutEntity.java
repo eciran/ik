@@ -25,8 +25,10 @@ public class UserInOutEntity {
 	foreignKey = @ForeignKey(name="FK_EMP_CODE"))
 	private EmployeesEntitiy employeeCode;
 //	private String employeeCode;
-	private Date checkInTime;
-	private Date checkOutTime;
+	private String checkInTime;
+	private String checkOutTime;
+	private String checkInHour;
+	private String checkOutHour; 
 	private String checkDate;
 	private String month;
 	private String year;
@@ -37,16 +39,16 @@ public class UserInOutEntity {
 		this.id = id;
 	}
 	
-	public Date getCheckInTime() {
+	public String getCheckInTime() {
 		return checkInTime;
 	}
-	public void setCheckInTime(Date checkInTime) {
+	public void setCheckInTime(String checkInTime) {
 		this.checkInTime = checkInTime;
 	}
-	public Date getCheckOutTime() {
+	public String getCheckOutTime() {
 		return checkOutTime;
 	}
-	public void setCheckOutTime(Date checkOutTime) {
+	public void setCheckOutTime(String checkOutTime) {
 		this.checkOutTime = checkOutTime;
 	}
 	public String getCheckDate() {
@@ -72,6 +74,18 @@ public class UserInOutEntity {
 	}
 	public void setYear(String year) {
 		this.year = year;
+	}
+	public String getCheckInHour() {
+		return checkInHour;
+	}
+	public void setCheckInHour(String checkInHour) {
+		this.checkInHour = checkInHour;
+	}
+	public String getCheckOutHour() {
+		return checkOutHour;
+	}
+	public void setCheckOutHour(String checkOutHour) {
+		this.checkOutHour = checkOutHour;
 	}
 	
 }
