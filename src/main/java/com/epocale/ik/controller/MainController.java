@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.epocale.ik.entity.UserInOutEntity;
 import com.epocale.ik.model.OperationModel;
+import com.epocale.ik.service.PuantajService;
 import com.epocale.ik.service.UserInOutService;
 
 @RestController
@@ -24,6 +25,9 @@ public class MainController {
 	
 	@Autowired
 	private UserInOutService userInOutService;
+	
+	@Autowired
+	private PuantajService puantajService;
 	
 	  @PostMapping("/upload") 
 	  public ResponseEntity<?> handleFileUpload( @RequestParam("file") MultipartFile file ) {
@@ -61,6 +65,10 @@ public class MainController {
 	  public  List<UserInOutEntity> getInOutList(@RequestBody OperationModel operation) {
 		  return userInOutService.getInOutList(operation);
 		   
+	  }
+	  @PostMapping("/createPuantaj")
+	  public void createPuantaj(@RequestBody OperationModel operation) {
+		  puantajService.createPuantaj(operation);
 	  }
 	 
 }

@@ -131,7 +131,15 @@ $(document).ready(function(){
 		 
 	 });	  
 		 
-	 	 
+	  function createPuantaj(){
+		  var op={};
+			 op["op"]="createPuantaj";
+			 op["year"]=sYear;
+			 op["month"]=sMonth;
+			 $('.loading-spinner').css("display","");
+			 sendAjaxPuantaj(op);
+		  
+	  }	 
 	  async function successAlert(alert){
 		  const Toast = Swal.mixin({
 			  toast: true,
@@ -168,37 +176,29 @@ $(document).ready(function(){
 			  title: alert +' Başarısız'
 			})
 	  }
-	  function sendAjax(jsonreq) {
+	  function sendAjaxPuantaj(jsonreq) {
 		     $.ajax({
-		     	url: "/updatePuantajLine",
+		     	url: "/createPuantaj",
 		         type: 'POST',
 		         data: JSON.stringify(jsonreq),
+		         contentType: "application/json",
 		         success: function (data) {
 		        	if(data!=null && data.lengt==0){
 		        		$('.loading-spinner').css("display","none");
-		   				successAlert("Dosya Yükleme");		        		
-		        	}
-		        	if(data.length>1){
-		        		$('.loading-spinner').css("display","none");
-			     		Swal.fire({
-							  title:'Çalışan Bulunamadı',
-							  text:data+'nolu çalışan bulunamadı. Lütfen çalışan listesini kontrol ediniz.',
-							  icon:'warning',
-							  confirmButtonColor: "#696cff" 
-							})
-		        	}
+		   					        		
+		        	}		        	
 		        	else{
+		        		$('.loading-spinner').css("display","none");
 		 				table.fnClearTable( 0 );
-		 				table.fnAddData(data);
 		 				table.fnDraw();
 		 	    	}
 		         },
 		     	error: function (data) {
 		     		$('.loading-spinner').css("display","none");
 		     		Swal.fire({
-						  title:'Çalışan Bulunamadı',
-						  text:data.responseText+'nolu çalışan bulunamadı. Lütfen çalışan listesini kontrol ediniz.',
-						  icon:'warning',
+						  title:'Hata',
+						  text:'Lütfen tekrar deneyiniz',
+						  icon:'error',
 						  confirmButtonColor: "#696cff" 
 						})
 				}
@@ -228,7 +228,18 @@ $(document).ready(function(){
 							});
 		        		 
 		        	 }else{
-		        		 // createPuantaj();
+		        		 Swal.fire({							 
+							  text:sYear+" yılı "+sMonth+". Ay "+" için puantaj dosyası oluşturulacaktır. Devam Edilsin mi?",
+							  icon:'question',
+							  showCancelButton: true,
+							  confirmButtonText: "Oluştur",
+							  confirmButtonColor: "#696cff",
+							  cancelButtonColor:  "#696cff",
+							}).then((result) => {
+								  if (result.isConfirmed) {
+									  createPuantaj();
+								  } 							  
+							});		        		 
 		        	 }
 		         },
 		  		 error:{
@@ -322,10 +333,28 @@ $(document).ready(function(){
                 <div data-i18n="Analytics">Anasayfa</div>
               </a>
             </li>
+             <li class="menu-item">
+              <a href="addEmployee.html" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bxs-group"></i>
+                <div data-i18n="Account Settings">Çalışanlar</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="employeeList.html" class="menu-link">
+                    <div data-i18n="Account">Çalışan Listesi</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="addEmployee.html" class="menu-link">
+                    <div data-i18n="Notifications">Çalışan Ekle</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
            <li class="menu-item">
               <a href="uploadFiles.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-file-txt"></i>
-                <div data-i18n="Tables">Dosya Yükleme</div>
+                <div data-i18n="Tables">Giriş-Çıkış Verileri</div>
               </a>
             </li>
              <li class="menu-item active">
@@ -334,42 +363,9 @@ $(document).ready(function(){
                 <div data-i18n="Tables">Puantaj Hesaplama</div>
               </a>
             </li>
-
+			
             <!-- Layouts -->
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
-                <div data-i18n="Layouts">Layouts</div>
-              </a>
-
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="layouts-without-menu.html" class="menu-link">
-                    <div data-i18n="Without menu">Without menu</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="layouts-without-navbar.html" class="menu-link">
-                    <div data-i18n="Without navbar">Without navbar</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="layouts-container.html" class="menu-link">
-                    <div data-i18n="Container">Container</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="layouts-fluid.html" class="menu-link">
-                    <div data-i18n="Fluid">Fluid</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="layouts-blank.html" class="menu-link">
-                    <div data-i18n="Blank">Blank</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
+           
 
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Pages</span>
@@ -748,7 +744,7 @@ $(document).ready(function(){
                   ©
                   <script>
                     document.write(new Date().getFullYear());
-                  </script> ❤️ by Emrah Ciran
+                  </script> ❤️ by <a href="http://emrahciran.com" style="color: #697a8d"><strong>Emrah Ciran</strong></a>
                 </div>               
               </div>
             </footer>

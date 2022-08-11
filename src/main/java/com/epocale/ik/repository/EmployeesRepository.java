@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.epocale.ik.entity.EmployeesEntitiy;
 
 @Repository
-public interface EmployeesRepository extends JpaRepository<EmployeesEntitiy, Long> {
+public interface EmployeesRepository extends JpaRepository<EmployeesEntitiy, String> {
 	
 	@Query(nativeQuery = true,value = "Select * from employees where employee_code	= :employee_code")
 	public EmployeesEntitiy findEmployeeByEmployeeId(@Param("employee_code") String employeeCode );

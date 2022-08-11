@@ -2,6 +2,7 @@ package com.epocale.ik.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -9,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -30,8 +32,11 @@ public class UserInOutEntity {
 	private String checkInHour;
 	private String checkOutHour; 
 	private String checkDate;
+	@Column(name = "month")
 	private String month;
+	@Column(name = "year")
 	private String year;
+	private int shift;
 	public Long getId() {
 		return id;
 	}
@@ -86,6 +91,12 @@ public class UserInOutEntity {
 	}
 	public void setCheckOutHour(String checkOutHour) {
 		this.checkOutHour = checkOutHour;
+	}
+	public int getShift() {
+		return shift;
+	}
+	public void setShift(int shift) {
+		this.shift = shift;
 	}
 	
 }

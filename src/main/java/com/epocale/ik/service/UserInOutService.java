@@ -36,13 +36,15 @@ public class UserInOutService {
 	EmployeesRepository employeesRepository;
 	
 	
-	public String EmployeeInOutAdd(List<String> userList, String month, String year){
+	public String EmployeeInOutAdd(List<String> userList, String month, String year) throws Exception{		
 		String ret="";
 		EmployeesEntitiy employee=employeesRepository.findEmployeeByEmployeeId(userList.get(0));
 		UserInOutEntity userInOut=new UserInOutEntity();
 		if (employee!=null) {
+			int shift=0;
 			if(employee.getEmployeeSecondName()==null) {
 				try {
+					
 					userList.set(3,userList.get(3).replace(".","-"));
 					userInOut.setEmployeeCode(employee);
 					userInOut.setCheckInTime(userList.get(3));
@@ -51,11 +53,14 @@ public class UserInOutService {
 					userInOut.setMonth(month);
 					userInOut.setYear(year);
 					if(userList.size()>6) {
+						shift=this.calculateShift(userList.get(5),userList.get(8),userList.get(4));
+						userInOut.setShift(shift);
 						userList.set(6,userList.get(6).replace(".","-"));
 						userInOut.setCheckOutTime(userList.get(6));
 						userInOut.setCheckOutHour(userList.get(8));
 					}
 					else {
+						userInOut.setShift(99999);
 						userInOut.setCheckOutTime("-");
 						userInOut.setCheckOutHour("-");
 					}
@@ -79,11 +84,14 @@ public class UserInOutService {
 					userInOut.setMonth(month);
 					userInOut.setYear(year);
 					if(userList.size()>7) {
+						shift=this.calculateShift(userList.get(6),userList.get(9), userList.get(5));
+						userInOut.setShift(shift);
 						userList.set(7,userList.get(7).replace(".","-"));
 						userInOut.setCheckOutTime(userList.get(7));
 						userInOut.setCheckOutHour(userList.get(9));
 					}
 					else {
+						userInOut.setShift(99999);
 						userInOut.setCheckOutTime("-");
 						userInOut.setCheckOutHour("-");
 					}
@@ -99,14 +107,14 @@ public class UserInOutService {
 			}
 		}	
 		else {
-			EmployeesEntitiy employee1=new EmployeesEntitiy();
-			employee1.setEmployeeCode(userList.get(0));
-			employee1.setEmployeeName(userList.get(1));
-			employee1.setEmployeeLastName(userList.get(2));
-			employeesRepository.save(employee1);
-//			System.out.println(userList.get(0) + "Nolu Çalışan bulunamadı");
-//			ret=(userList.get(0)+"-");
-//			throw new Exception(ret);
+//			EmployeesEntitiy employee1=new EmployeesEntitiy();
+//			employee1.setEmployeeCode(userList.get(0));
+//			employee1.setEmployeeName(userList.get(1));
+//			employee1.setEmployeeLastName(userList.get(2));
+//			employeesRepository.save(employee1);
+			System.out.println(userList.get(0) + "Nolu Çalışan bulunamadı");
+			ret=(userList.get(0)+"-");
+			throw new Exception(ret);
 		}
 		return ret;
 	}
@@ -114,6 +122,12 @@ public class UserInOutService {
 
 	public String updatePuantajLine(OperationModel operation) throws Throwable {
 	  String ret="";
+	  try {
+			userInOutRepository.deletePeriod(operation.getMonth(), operation.getYear());
+	  }catch (Exception e) {
+		  e.printStackTrace();
+		  System.out.println("Veri Silinemedi");
+	  }
 	  List<FileListTO> fileList =fileListShow("puantaj"); 
 	  File file=new  File(fileList.get(0).getPath());
 	  try (FileReader fr = new FileReader(file);
@@ -132,7 +146,7 @@ public class UserInOutService {
 							inOutList.add(lineInfo[i]);
 						}
 					}
-				}
+				}				
 				if(inOutList.size()>0) {
 					try {
 						ret+=this.EmployeeInOutAdd(inOutList,operation.getMonth(),operation.getYear());
@@ -209,5 +223,45 @@ public class UserInOutService {
 		String month=op.getMonth();
 		String year=op.getYear();
 		return userInOutRepository.getPeriodCount(month,year);
+	}
+	
+	public int calculateShift(String in_hour, String out_hour, String in_date) {
+		int shift=0;
+		int _in_hour=450;
+		int _out_hour=1080;
+		if(in_hour.contains(":")&&out_hour.contains(":")) {
+			String[] external_in_time=in_hour.split(":");
+			String[] external_out_time=out_hour.split(":");
+			if(external_in_time[0]!="-"&&external_in_time[1]!="-"&&external_out_time[0]!="-"&&external_out_time[1]!="-") {
+				int _inTime=Integer.parseInt(external_in_time[0])*60+Integer.parseInt(external_in_time[1]);			
+				int _outTime=Integer.parseInt(external_out_time[0])*60+Integer.parseInt(external_out_time[1]);
+				if(in_date.equals("Cmt") || in_date.equals("Paz")) {
+					int deger=_outTime-_inTime;
+					shift+=deger;
+				}
+				else {
+					if(_inTime>_in_hour) {
+						int deger=_inTime-_in_hour;
+						shift-=deger;
+					}
+					if(_outTime>_out_hour){
+						int deger=_outTime-_out_hour;
+						shift+=deger;
+					}
+					else if(_outTime<_out_hour){
+						if(!(_outTime>=(_out_hour-30))) {
+							int deger=_out_hour-(_outTime-30);
+							shift-=deger;
+						}
+					}					
+					System.out.println("Shift:"+shift);
+				}
+			}else {
+				System.out.println("Shift:"+shift);
+			}
+		}else {
+			System.out.println("Shift:"+shift);
+		}	
+		return shift;
 	}
 }

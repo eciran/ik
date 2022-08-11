@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html
-  lang="tr"
+  lang="en"
   class="light-style layout-menu-fixed"
   dir="ltr"
   data-theme="theme-default"
@@ -14,7 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Giriş - Çıkış Verileri</title>
+    <title>Çalışanlar | Çalışan Listesi</title>
 
     <meta name="description" content="" />
 
@@ -59,50 +59,39 @@
 <script src="/global/js/select2.min.js"></script>
 <script src="/global/js/sweetalert2.js"></script>
 <script src="/global/js/jszip.min.js" type="text/javascript"></script>
-<script src="../assets/vendor/js/helpers.js"></script>
+    <script src="../assets/vendor/js/helpers.js"></script>
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../assets/js/config.js"></script>
     
     <style type="text/css">
-    #myTable_button{
+    #employeeTable_button{
 	margin-left:15px;
 }
-#myTable_filter input {
+#employeeTable_filter input {
 	margin-right:15px;
 }
 .dt-buttons {
    margin-left:15px;
 }
-.table {
+#employeeTable_info{
 	margin-left:10px;
+	justify-content:center;
+}
+#employeeTable tbody {		
 	text-align:center;
-	justify-content: center;
+	
 }
-.dataTables_length{
-	margin-left:15px;
-}
-#myTable_info{
-	margin-left:15px;
-}
-
     </style>
     <script type="text/javascript">
 $(document).ready(function(){
+	getEmployeeList();
 	$.noConflict();
-	  var table = $('#myTable').dataTable({		 
+	  var table = $('#employeeTable').dataTable({		 
 		 "columnDefs": [
 		        {"className": "dt-center", "targets": "_all"}
 		      ],
-	     "paging": true,     
-		 "dom": 'Bfrtip',
-		 "buttons": [
-    		 {	extend:'excel',
-    		    className: 'btn btn-primary disabled',
-                text: 'Verileri Excele Aktar',
-	         },
-        ],
         "language":{
         	"emptyTable": "Tabloda herhangi bir veri mevcut değil",
         	"info": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
@@ -118,101 +107,13 @@ $(document).ready(function(){
         },
 
 	 }); 
-	  var sMonth;
-	  var sYear;
-	 $('#btnUpload').click(function(){
-		 sMonth= $( "#selectMonth option:selected" ).attr('value');
-		 sYear= $( "#selectYear option:selected" ).attr('value');
-		 if(sMonth!="0" && sYear!="0"){
-			 var op={};
-			 op["op"]="getPeriodCount";
-			 op["month"]=sMonth;
-			 op["year"]=sYear;
-			 sendAjaxGetPeriodCount(op);
-		 }
-		 else{
-			 Swal.fire({
-				  title:'Dönem Seçilmedi!',
-				  icon:'warning',
-				  text:'Lütfen Ay ve Yıl Seçimi Yapınız',
-				  confirmButtonColor: "#696cff" 
-				})
-		 }
-		 
-	 });
-	 async function upControlFiles(){
-			
-				 const { value: file } = await Swal.fire({
-				  title: 'Dosya Seçiniz',
-				  confirmButtonText:'Yükle',
-				  confirmButtonColor: "#696cff",
-				  input: 'file',
-				  inputAttributes: {
-				    'accept': 'text/plain',
-				    'aria-label': 'Dosya yükle'
-				  }
-				})
+	  
+	  function getEmployeeList(){
+		  sendAjaxGetEmployeeList();
+	  }
+	  
+	  
 
-				if (file) {
-					const fileType=file.name.split(".");
-					if(file.type=="text/plain" && fileType[1]=="txt"){
-						$('.loading-spinner').css("display","");
-						uploadFile(file,sMonth,sYear);
-					}
-				}
-				 if(file==null){
-					Swal.fire({
-					  title:'Dosya Seçilmedi!',
-					  icon:'error',
-					  showConfirmButton: false,
-					  timer: 700
-					})
-				}				 
-	 	}
-	 $('#btnGetInOutList').click(async function(){
-			sMonth= $( "#selectMonth option:selected" ).attr('value');
-			sYear= $( "#selectYear option:selected" ).attr('value');
-			 if(sMonth!="0" && sYear!="0"){
-			  	  var getInOutList={};
-				  getInOutList["op"]="getInOutList";
-				  getInOutList["month"]=sMonth;
-				  getInOutList["year"]=sYear;
-				  $('.loading-spinner').css("display","");
-				  sendAjaxGetInOutList(getInOutList);
-			 }
-			 else{
-				 Swal.fire({
-					  title:'Dönem Seçilmedi!',
-					  icon:'warning',
-					  text:'Lütfen Ay ve Yıl Seçimi Yapınız',
-					  confirmButtonColor: "#696cff" 
-					})
-			 }
-	 }); 	  
-		 
-	 async function uploadFile(file,sMonth,sYear) {
-		  let formData = new FormData(); 
-		  formData.append("file", file);
-		  let response = await fetch('/upload', {
-		    method: "POST", 
-		    body: formData
-		  }); 
-		  
-		 
-
-		  if (response.status == 200) {
-			  var inOutList={};
-			  inOutList["op"]="updatePuantajLine";
-			  inOutList["month"]=sMonth;
-			  inOutList["year"]=sYear;
-			  sendAjax(inOutList)		  
-		  }
-		  else{
-			  $('.loading-spinner').css("display","none");
-			  errorAlert("Dosya Yükleme");
-		  }
-		}
-	 
 	  async function successAlert(alert){
 		  const Toast = Swal.mixin({
 			  toast: true,
@@ -249,190 +150,139 @@ $(document).ready(function(){
 			  title: alert +' Başarısız'
 			})
 	  }
-	  function sendAjax(jsonreq) {
+	  function getEmployeeList(jsonreq) {
 		     $.ajax({
-		     	url: "/updatePuantajLine",
-		         type: 'POST',
+		     	url: "/employeeList",
+		         type: 'GET',
 		         data: JSON.stringify(jsonreq),
 		         contentType: "application/json",
 		         success: function (data) {
-		        	if(data!=null && data.length==0){
+		        	if(data!=null){
 		        		$('.loading-spinner').css("display","none");
-		   				successAlert("Dosya Yükleme");		        		
-		        	}
-		        	else if(data.length>1){
-		        		$('.loading-spinner').css("display","none");
-			     		Swal.fire({
-							  title:'Çalışan Bulunamadı',
-							  text:data+'nolu çalışan bulunamadı. Lütfen çalışan listesini kontrol ediniz.',
-							  icon:'warning',
-							  confirmButtonColor: "#696cff" 
-							})
-		        	}
+		        		 	table = $("#employeeTable").dataTable({
+		                     destroy: !0,
+		                     data: data,
+		                     "dom": 'Bfrtip',
+		            		 "buttons": [
+		                		 {	extend:'excel',
+		                		    className: 'btn btn-primary',
+		                            text: 'Excele Aktar',
+		            	         },
+		            	         {	    className: 'btn btn-dark row-btn disabled',
+		         	                text: 'Güncelle',
+		         		         },
+		         		        {	    className: 'btn btn-danger row-btn disabled',
+			         	                text: 'Sil',
+			         		         },
+		                    ],
+		                    "language":{
+		                    	"emptyTable": "Tabloda herhangi bir veri mevcut değil",
+		                    	"info": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
+		                    	"infoEmpty": "Kayıt Bulunamadı",
+		                    	 "search": "Ara:",
+		                    	    "zeroRecords": "Eşleşen kayıt bulunamadı",
+		                    	 "paginate": {
+		                    	        "first": "İlk",
+		                    	        "last": "Son",
+		                    	        "next": "Sonraki",
+		                    	        "previous": "Önceki"
+		                    	    },
+		                    },
+		                     columns: [		                         
+		                         { data: "employeeCode" },
+		                         { data: "employeeName",
+		                        	  render:function (e, t, n){
+		                        		  if(n.employeeSecondName!=null){
+		                        			 return n.employeeName+" "+n.employeeSecondName;						 	
+		                        		  }
+		                        		  else{
+		                        			  return n.employeeName;
+		                        		  }
+		                        	  }},
+		                         { data: "employeeLastName" },		                        
+		                   
+		                     ],
+		                     columnDefs: [{ targets: "_all", defaultContent: "" }],
+		                 });
+		              }		        	
 		        	else{
-		 				table.fnClearTable( 0 );
-		 				table.fnAddData(data);
+		        		$('.loading-spinner').css("display","none");
+		 				table.fnClearTable( 0);
 		 				table.fnDraw();
 		 	    	}
 		         },
 		     	error: function (data) {
 		     		$('.loading-spinner').css("display","none");
 		     		Swal.fire({
-						  title:'Çalışan Bulunamadı',
-						  text:data.responseText+'nolu çalışan bulunamadı. Lütfen çalışan listesini kontrol ediniz.',
-						  icon:'warning',
-						  confirmButtonColor: "#696cff" 
-						})
-				}
-		     });
-	  }
-	  function tableListAdd(data){
-          var table = $("#myTable").dataTable({
-              destroy: !0,
-              data: data,
-              "dom": 'Bfrtip',
-     		 "buttons": [
-         		 {	extend:'excel',
-         		    className: 'btn btn-primary',
-                     text: 'Verileri Excele Aktar',
-     	         },
-             ],
-             "language":{
-             	"emptyTable": "Tabloda herhangi bir veri mevcut değil",
-             	"info": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
-             	"infoEmpty": "Kayıt Bulunamadı",
-             	 "search": "Ara:",
-             	    "zeroRecords": "Eşleşen kayıt bulunamadı",
-             	 "paginate": {
-             	        "first": "İlk",
-             	        "last": "Son",
-             	        "next": "Sonraki",
-             	        "previous": "Önceki"
-             	    },
-             },
-              columns: [
-                  { data: "employeeCode.employeeCode" },
-                  { data: "",
-                	  render:function (e, t, n){
-                		  if(n!=null){
-                			  var ret;
-                			  if(n.employeeCode.employeeSecondName!=null){
-                			 	 ret= n.employeeCode.employeeName+" "+n.employeeCode.employeeSecondName+" "+n.employeeCode.employeeLastName;
-                			  }
-                			  else{
-                				  ret= n.employeeCode.employeeName+" "+n.employeeCode.employeeLastName; 
-                			  }                			  
-                			  return ret;
-                		  }
-                	  }
-                  },
-                  { data: "checkInTime",
-                	  render:function (e, t, n){
-                		  if(n!=null){
-                			 const time= e.split("T");
-                			 return time[0]+" "+n.checkInHour;
-                		  }
-                	  }
-                  },
-                  { data: "checkOutTime",
-                	  render:function (e, t, n){
-                		  if(n!=null){
-                			 const time= e.split("T");
-                			 return time[0]+" "+n.checkOutHour;						 	
-                		  }                			  
-                	  }
-                  },
-                  { data: "checkDate" },
-                  { data: "month" },
-                  { data: "year" },
-                  { data: "shift",
-                	  render:function (e, t, n){
-                		  if(n!=null && e=="99999"){
-                			 return '<div style="background-color:#e7e7ff;color:#696cff;border-radius:5px">Eksik Veri</span>'						 	
-                		  }
-                		  else{
-                			  return e;
-                		  }
-                	  }
-                  }
-            
-              ],
-              columnDefs: [{ targets: "_all", defaultContent: "" }],
-          });
-       }
-	  
-	  function sendAjaxGetInOutList(jsonreq) {
-		     $.ajax({
-		     	url: "/getInOutList",
-		         type: 'POST',
-		         data: JSON.stringify(jsonreq),
-		         contentType: "application/json",
-		         success: function (data) {
-		        	if(data!=null && data.length>0){
-		        		$('.loading-spinner').css("display","none");
-		   				tableListAdd(data);	        		
-		        	}		        	
-		        	else{
-		 				table.fnClearTable( 0 );
-		 				table.fnDraw();
-		 				$('.loading-spinner').css("display","none");
-		 				Swal.fire({
-							  title:'Veri Bulunamadı',
-							  text:'Seçilen tarihler arasında veri bulunamadı',
-							  icon:'warning',
-							  confirmButtonColor: "#696cff" 
-							})
-		 	    	}
-		         },
-		     	error: function (data) {
-		     		$('.loading-spinner').css("display","none");
-		     		Swal.fire({
-						  title:'HATA',
-						  text:'Lütfen Tekrar Deneyin',
+						  title:'Hata',
+						  text:'Lütfen tekrar deneyiniz',
 						  icon:'error',
 						  confirmButtonColor: "#696cff" 
 						})
 				}
 		     });
-	  }
+		    
+	}
+	  
+	  
 	  function sendAjaxGetPeriodCount(jsonreq){
 		  $.ajax({
 		     	url: "/getPeriodCount",
-		         type: 'POST',
+		         type: '',
 		         data: JSON.stringify(jsonreq),
 		         contentType: "application/json",
 		         success: function (data) { 
-		        	 if(data!="0"){
+		        	 if(data=="0"){
 		        		 Swal.fire({
-							  title:'Listede Kayıt Mevcut',
-							  text:'Yüklenmek istenen döneme daha önceden veri yüklenmiş.Önceki veriler silinecektir.Devam etmek istiyor musunuz?',
+							  title:'Listede Kayıt Mevcut Değil',
+							  text:'Puantaj oluşturulmak istenen döneme ait veri bulunamadı. Lütfen veri yükleme işlemini tamamladıktan sonra devam ediniz.',
 							  icon:'warning',
 							  showCancelButton: true,
-							  confirmButtonText: "Devam Et",
+							  confirmButtonText: "Dosya yükle",
 							  confirmButtonColor: "#696cff",
 							  cancelButtonColor:  "#696cff",
 							}).then((result) => {
 								  if (result.isConfirmed) {
-								    upControlFiles();
-								  } else{
-									    Swal.fire({
-									    	title:'Yükleme İşlemi iptal edildi',
-									    	icon:'warning',
-									    	showConfirmButton: false,
-								    	    timer: 700
-									    })
-								    }								  
+								   	window.location.replace("/uploadFiles.html");
+								  } 							  
 							});
 		        		 
 		        	 }else{
-		        		 upControlFiles();
+		        		 Swal.fire({							 
+							  text:sYear+" yılı "+sMonth+". Ay "+" için puantaj dosyası oluşturulacaktır. Devam Edilsin mi?",
+							  icon:'question',
+							  showCancelButton: true,
+							  confirmButtonText: "Oluştur",
+							  confirmButtonColor: "#696cff",
+							  cancelButtonColor:  "#696cff",
+							}).then((result) => {
+								  if (result.isConfirmed) {
+									  createPuantaj();
+								  } 							  
+							});		        		 
 		        	 }
 		         },
-		  		 error:{
+		  		 error: function(data){
 		  			 
 		  		 }
 			});
-	  }
+}
+	  $('#employeeTable tbody').on('click','tr',function() {
+  	    datam = table.fnGetData(this);
+  	  $('.row-btn').addClass('disabled');
+  	$('.buttons-excel ').removeClass('disabled');
+  	    if ( $(this).hasClass('selected') ) {
+  	    	$(this).removeClass('selected');
+  	    }
+  	    else{
+  	    	table.$('tr.selected').removeClass('selected');
+  	    		$('.row-btn').removeClass('disabled');
+  	    		$('.buttons-excel').addClass('disabled');
+  	    		$(this).addClass('selected');
+  	    		var empCode=datam.employeeCode;	
+  	    }
+	});
+	  
 });
 </script>
   </head>
@@ -513,19 +363,20 @@ $(document).ready(function(){
 
           <ul class="menu-inner py-1">
             <!-- Anasayfa -->
-                  <li class="menu-item">
+            <li class="menu-item">
               <a href="index.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Anasayfa</div>
               </a>
             </li>
-             <li class="menu-item">
-              <a href="addEmployee.html" class="menu-link menu-toggle">
+                 </li>
+			 <li class="menu-item active open">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
                 <div data-i18n="Account Settings">Çalışanlar</div>
               </a>
               <ul class="menu-sub">
-                <li class="menu-item">
+                <li class="menu-item active">
                   <a href="employeeList.html" class="menu-link">
                     <div data-i18n="Account">Çalışan Listesi</div>
                   </a>
@@ -537,7 +388,7 @@ $(document).ready(function(){
                 </li>
               </ul>
             </li>
-           <li class="menu-item active">
+           <li class="menu-item">
               <a href="uploadFiles.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-file-txt"></i>
                 <div data-i18n="Tables">Giriş-Çıkış Verileri</div>
@@ -548,6 +399,42 @@ $(document).ready(function(){
                 <i class="menu-icon tf-icons bx bx-calculator"></i>
                 <div data-i18n="Tables">Puantaj Hesaplama</div>
               </a>
+            </li>
+
+            <!-- Layouts -->
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="Layouts">Layouts</div>
+              </a>
+
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="layouts-without-menu.html" class="menu-link">
+                    <div data-i18n="Without menu">Without menu</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="layouts-without-navbar.html" class="menu-link">
+                    <div data-i18n="Without navbar">Without navbar</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="layouts-container.html" class="menu-link">
+                    <div data-i18n="Container">Container</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="layouts-fluid.html" class="menu-link">
+                    <div data-i18n="Fluid">Fluid</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="layouts-blank.html" class="menu-link">
+                    <div data-i18n="Blank">Blank</div>
+                  </a>
+                </li>
+              </ul>
             </li>
 
             <li class="menu-header small text-uppercase">
@@ -829,64 +716,38 @@ $(document).ready(function(){
         <div class="layout-page">
          
           <!-- Content wrapper -->
-          <div class="content-wrapper">
+            <div class="content-wrapper">
             <!-- Content -->
-				
+
             <div class="container-xxl flex-grow-1 container-p-y">
-            <div style="margin-bottom: 10px">
-				  <div class="row">
-				    <div class="col">
-				    <label for="selectMonth" class="form-label">Ay Seçiniz</label>
-                       <select class="form-select" id="selectMonth">
-                       	   <option value="0" selected disabled>Seçiniz...</option>	
-	                       <option value="1">Ocak</option>
-	                       <option value="2">Şubat</option>
-	                       <option value="3">Mart</option>
-	                       <option value="4">Nisan</option>
-	                       <option value="5">Mayıs</option>
-	                       <option value="6">Haziran</option>
-						   <option value="7">Temmuz</option>
-						   <option value="8">Ağustos</option>
-						   <option value="9">Eylül</option>
-						   <option value="10">Ekim</option>
-						   <option value="11">Kasım</option>
-						   <option value="12">Aralık</option>
-					   </select>
-				    </div>
-				    <div class="col">
-				      <label for="defaultSelect" class="form-label">Yıl Seçiniz</label>
-                        <select id="selectYear" class="form-select">
-                          <option value="0" selected disabled>Seçiniz...</option>	
-                          <option value="2022">2022</option>
-                          <option value="2023">2023</option>
-                        </select>
-				    </div>
-				  </div>
-			</div>
-             <div style="margin-bottom:10px">
-				<button id="btnUpload" type="button" class="btn btn-primary">Dosya Yükle</button>
-				<button id="btnGetInOutList" type="button" class="btn btn-primary">Giriş-Çıkış Verilerini Getir</button>			
-			</div>
+              <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Çalışanlar /</span> Çalışan Listesi</h4>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <ul class="nav nav-pills flex-column flex-md-row mb-3">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="javascript:void(0);"><i class='bx bx-list-ol'></i> Çalışan Listesi</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="addEmployee.html" ><i class='bx bx-user-plus'></i> Çalışan Ekle</a
+                      >
+                    </li>
+                  </ul>
+                  </div>
+                  </div>
               <!-- Responsive Table -->
               <div class="card">
-                <h5 class="card-header">Aylık Tablo</h5>
+                <h5 class="card-header">Çalışan Tablo</h5>
                 <div class="table-responsive text-nowrap">
-                  <table class="table card-table" id="myTable">
+                  <table class="table card-table" id="employeeTable">
                     <thead>
                       <tr class="text-nowrap">
-                         <th>Kod</th>
-                         <th>İsim-Soyisim</th>
-	                 	 <th>Giriş Tarihi</th>
-	                 	 <th>Çıkış Tarihi</th>
-	                  	 <th>Gün</th>
-	                     <th>Ay</th>
-	                     <th>Yıl</th>
-	                     <th>Mesai(dk)</th>
+                        <th>Kod</th>
+                         <th>İsim</th>
+	                 	<th>Soyisim</th>
+	           
                       </tr>
                     </thead>
-                    <tbody>
-                     
-                    </tbody>
                   </table>
                 </div>
               </div>
@@ -901,7 +762,7 @@ $(document).ready(function(){
                   ©
                   <script>
                     document.write(new Date().getFullYear());
-                  </script> ❤️ by Emrah Ciran
+                  </script> ❤️ by <a href="http://emrahciran.com" style="color: #697a8d"><strong>Emrah Ciran</strong></a>
                 </div>               
               </div>
             </footer>
