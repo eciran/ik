@@ -45,11 +45,11 @@ public class MainController {
 	    return ResponseEntity.ok("File uploaded successfully.");
 	  }
 	  
-	  @PostMapping("/updatePuantajLine")
-	  public String updatePuantajLine(@RequestBody OperationModel operation) {
+	  @PostMapping("/addInOutLine")
+	  public String addInOutLine(@RequestBody OperationModel operation) {
 		  String ret="";
 		  try {
-			ret=userInOutService.updatePuantajLine(operation);
+			ret=userInOutService.addInOutLine(operation);
 		} catch (Throwable e) {
 			String[] errmsg=e.getMessage().split(":");
 			ret=errmsg[1];
@@ -67,8 +67,8 @@ public class MainController {
 		   
 	  }
 	  @PostMapping("/createPuantaj")
-	  public void createPuantaj(@RequestBody OperationModel operation) {
-		  puantajService.createPuantaj(operation);
+	  public List<String> createPuantaj(@RequestBody OperationModel operation) {
+		 return puantajService.createPuantaj(operation);
 	  }
 	 
 }

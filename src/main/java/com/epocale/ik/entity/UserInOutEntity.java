@@ -37,6 +37,7 @@ public class UserInOutEntity {
 	@Column(name = "year")
 	private String year;
 	private int shift;
+	private int cuts;
 	public Long getId() {
 		return id;
 	}
@@ -97,6 +98,12 @@ public class UserInOutEntity {
 	}
 	public void setShift(int shift) {
 		this.shift = shift;
+	}
+	public int getCuts() {
+		return cuts;
+	}
+	public void setCuts(int cuts) {
+		this.cuts = cuts;
 	}
 	
 }

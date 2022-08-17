@@ -26,4 +26,13 @@ public class EmployeeController {
 	public List<EmployeesEntitiy> getEmployeeList(){
 		return employeeService.getEmployeeList();
 	}
+	
+	@PostMapping(value = "/updateEmployee")
+	public String updateEmployee(@RequestBody EmployeesEntitiy employee) {
+		return employeeService.updateEmployee(employee);
+	}
+	@PostMapping(value = "/deleteEmployee")
+	public void deleteEmployee(@RequestBody EmployeesEntitiy employee) {
+		//return employeeService.updateEmployee(employee);
+	}
 }

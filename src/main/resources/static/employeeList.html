@@ -86,6 +86,8 @@
     </style>
     <script type="text/javascript">
 $(document).ready(function(){
+	var datam;
+	var empCode;
 	getEmployeeList();
 	$.noConflict();
 	  var table = $('#employeeTable').dataTable({		 
@@ -168,11 +170,29 @@ $(document).ready(function(){
 		                		    className: 'btn btn-primary',
 		                            text: 'Excele Aktar',
 		            	         },
-		            	         {	    className: 'btn btn-dark row-btn disabled',
-		         	                text: 'Güncelle',
+		            	         {	     className: 'btn btn-dark row-btn disabled',
+		         	              	     text: 'Güncelle',	
+		         	              	     attr:  {
+				         	                 id: 'btnEmpUpdate',
+				         	                 "data-bs-toggle": 'modal',
+				         	                 "data-bs-target":'#backDropModal'		         	                 
+			         	              },
+			            	         action: function ( e, dt, node, config ) {
+			            	        	 $("#modalEmpCode").val(datam.employeeCode);
+			            	        	 $("#modalEmpName").val(datam.employeeName);
+			            	        	 $("#modalEmpSecondName").val(datam.employeeSecondName);
+			            	        	 $("#modalEmpLastName").val(datam.employeeLastName);
+			                         }
+		            	         	  
 		         		         },
 		         		        {	    className: 'btn btn-danger row-btn disabled',
 			         	                text: 'Sil',
+			         	               attr:  {
+			         	                  id: 'btnEmpRemove'
+			         	              },
+			         	              action: function ( e, dt, node, config ) {
+				            	        	 removeEmploye();
+				                         }
 			         		         },
 		                    ],
 		                    "language":{
@@ -223,65 +243,63 @@ $(document).ready(function(){
 		     });
 		    
 	}
+	  function removeEmploye(){
+		  
+	  }
 	  
+	  $("#modalBtnUpdate").click(function(){
+		  empUpdate={},
+		  empUpdate["employeeCode"]= $("#modalEmpCode").val();
+		  empUpdate["employeeName"]= $("#modalEmpName").val();
+		  empUpdate["employeeSecondName"]= $("#modalEmpSecondName").val();
+		  empUpdate["employeeLastName"]= $("#modalEmpLastName").val();
+		  sendAajaxUpdateEmploye(empUpdate);
+		  
+	  });
 	  
-	  function sendAjaxGetPeriodCount(jsonreq){
+	  function sendAajaxUpdateEmploye(jsonreq){
 		  $.ajax({
-		     	url: "/getPeriodCount",
-		         type: '',
+		     	url: "/updateEmployee",
+		         type: 'POST',
 		         data: JSON.stringify(jsonreq),
 		         contentType: "application/json",
-		         success: function (data) { 
-		        	 if(data=="0"){
-		        		 Swal.fire({
-							  title:'Listede Kayıt Mevcut Değil',
-							  text:'Puantaj oluşturulmak istenen döneme ait veri bulunamadı. Lütfen veri yükleme işlemini tamamladıktan sonra devam ediniz.',
-							  icon:'warning',
-							  showCancelButton: true,
-							  confirmButtonText: "Dosya yükle",
-							  confirmButtonColor: "#696cff",
-							  cancelButtonColor:  "#696cff",
-							}).then((result) => {
-								  if (result.isConfirmed) {
-								   	window.location.replace("/uploadFiles.html");
-								  } 							  
-							});
-		        		 
-		        	 }else{
-		        		 Swal.fire({							 
-							  text:sYear+" yılı "+sMonth+". Ay "+" için puantaj dosyası oluşturulacaktır. Devam Edilsin mi?",
-							  icon:'question',
-							  showCancelButton: true,
-							  confirmButtonText: "Oluştur",
-							  confirmButtonColor: "#696cff",
-							  cancelButtonColor:  "#696cff",
-							}).then((result) => {
-								  if (result.isConfirmed) {
-									  createPuantaj();
-								  } 							  
-							});		        		 
+		         success: function (data) {
+
+		        	 if(data=="Success"){
+		        		 $("#modal-close").trigger("click");
+		        		 getEmployeeList();
+		        		 successAlert("Güncelleme");
 		        	 }
+		        	 else{
+		        		 $("#modal-close").trigger("click");
+		        		 getEmployeeList();
+		        		 errorAlert("Güncelleme");
+		        	 }
+		        	
 		         },
 		  		 error: function(data){
-		  			 
+	  			     $("#modal-close").trigger("click");
+	        		 getEmployeeList();
+		  			errorAlert("Güncelleme");
 		  		 }
 			});
-}
+			}
+
 	  $('#employeeTable tbody').on('click','tr',function() {
-  	    datam = table.fnGetData(this);
-  	  $('.row-btn').addClass('disabled');
-  	$('.buttons-excel ').removeClass('disabled');
-  	    if ( $(this).hasClass('selected') ) {
-  	    	$(this).removeClass('selected');
-  	    }
-  	    else{
-  	    	table.$('tr.selected').removeClass('selected');
+	  	    datam = table.fnGetData(this);
+	  	    $('.row-btn').addClass('disabled');
+	  		$('.buttons-excel ').removeClass('disabled');
+	  	    if ( $(this).hasClass('selected') ) {
+	  	    	$(this).removeClass('selected');
+  	    	}
+  	    	else{
+  	    		table.$('tr.selected').removeClass('selected');
   	    		$('.row-btn').removeClass('disabled');
   	    		$('.buttons-excel').addClass('disabled');
   	    		$(this).addClass('selected');
-  	    		var empCode=datam.employeeCode;	
-  	    }
-	});
+  	    		empCode=datam.employeeCode;	
+  	    	}
+		});
 	  
 });
 </script>
@@ -735,6 +753,7 @@ $(document).ready(function(){
                   </ul>
                   </div>
                   </div>
+                  <div class="alert alert-dark" role="alert" style="padding:0.4375rem 0.9375rem !important"> Not: Yüklenen giriş-çıkış listesindeki çalışan isim-soyisimleri ile aşağıda bulunan listedeki çalışan isim-soyisimlerinin aynı olmaması durumunda sistem hata verecektir.</div>
               <!-- Responsive Table -->
               <div class="card">
                 <h5 class="card-header">Çalışan Tablo</h5>
@@ -786,7 +805,74 @@ $(document).ready(function(){
             	<span class="visually-hidden">Loading...</span>
 			</div>
   			 <div id="spinnerDiv" class="loading-spinner" style="position: fixed;left:0;top:0;width: 100%;height: 100%;background: black;opacity: 0.25;z-index: 9999;display: none"></div>  
-
+	<!-- Edit Modal -->
+	 <div class="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1">
+                          <div class="modal-dialog">
+                            <form class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="backDropModalTitle">Çalışan Bilgilerini Güncelle</h5>
+                                <button
+                                  type="button"
+                                  id="modal-close"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                 <div class="row g-2">
+                                  <div class="col mb-0">
+                                    <label for="modalEmpCode">Kod</label>
+                                    <input
+                                      type="text"
+                                      id="modalEmpCode"
+                                      class="form-control required_emp"
+                                      oninput= "this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                                      maxlength="4"
+                                      placeholder="Çalışan Kodu"
+                                      disabled
+                                    />
+                                  </div>
+                                  <div class="col mb-0">
+                                    <label for="modalEmpName" class="">İsim</label>
+                                    <input
+                                      type="text"
+                                      id="modalEmpName"
+                                      class="form-control required_emp"
+                                      placeholder="İsim"
+                                    />
+                                  </div>
+                                </div>
+                                <div class="row g-2" style="margin-top:5px;">
+                                  <div class="col mb-0">
+                                    <span for="modalEmpSecondName">İsim (Opsiyonel)</span>
+                                    <input
+                                      type="text"
+                                      id="modalEmpSecondName"
+                                      class="form-control"
+                                      placeholder="İkinci İsim"
+                                    />
+                                  </div>
+                                  <div class="col mb-0">
+                                    <label for="dobBackdrop" class="">Soyisim</label>
+                                    <input
+                                      type="text"
+                                      id="modalEmpLastName"
+                                      class="form-control required_emp"
+                                      placeholder="Soyisim"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                  Close
+                                </button>
+                                <button type="button" id="modalBtnUpdate" class="btn btn-primary">Güncelle</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="../assets/vendor/libs/jquery/jquery.js"></script>

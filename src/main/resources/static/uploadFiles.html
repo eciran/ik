@@ -202,7 +202,7 @@ $(document).ready(function(){
 
 		  if (response.status == 200) {
 			  var inOutList={};
-			  inOutList["op"]="updatePuantajLine";
+			  inOutList["op"]="addInOutLine";
 			  inOutList["month"]=sMonth;
 			  inOutList["year"]=sYear;
 			  sendAjax(inOutList)		  
@@ -251,7 +251,7 @@ $(document).ready(function(){
 	  }
 	  function sendAjax(jsonreq) {
 		     $.ajax({
-		     	url: "/updatePuantajLine",
+		     	url: "/addInOutLine",
 		         type: 'POST',
 		         data: JSON.stringify(jsonreq),
 		         contentType: "application/json",
@@ -278,9 +278,9 @@ $(document).ready(function(){
 		     	error: function (data) {
 		     		$('.loading-spinner').css("display","none");
 		     		Swal.fire({
-						  title:'Çalışan Bulunamadı',
-						  text:data.responseText+'nolu çalışan bulunamadı. Lütfen çalışan listesini kontrol ediniz.',
-						  icon:'warning',
+						  title:'HATA',
+						  text:'Lütfen Tekrar Deneyin',
+						  icon:'error',
 						  confirmButtonColor: "#696cff" 
 						})
 				}
@@ -345,6 +345,16 @@ $(document).ready(function(){
                   { data: "checkDate" },
                   { data: "month" },
                   { data: "year" },
+                  { data: "cuts",
+                	  render:function (e, t, n){
+                		  if(n!=null && e=="99999"){
+                			 return '<div style="background-color:#e7e7ff;color:#696cff;border-radius:5px">Eksik Veri</span>'						 	
+                		  }
+                		  else{
+                			  return e;
+                		  }
+                	  }
+                  },
                   { data: "shift",
                 	  render:function (e, t, n){
                 		  if(n!=null && e=="99999"){
@@ -881,7 +891,8 @@ $(document).ready(function(){
 	                  	 <th>Gün</th>
 	                     <th>Ay</th>
 	                     <th>Yıl</th>
-	                     <th>Mesai(dk)</th>
+	                     <th>Kesinti(saat)</th>
+	                     <th>Mesai(saat)</th>
                       </tr>
                     </thead>
                     <tbody>

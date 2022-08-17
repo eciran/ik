@@ -78,6 +78,11 @@
 .dataTables_info{
 	margin-left:10px;
 }
+.table {
+	margin-left:10px;
+	text-align:center;
+	justify-content: center;
+}
     </style>
     <script type="text/javascript">
 $(document).ready(function(){
@@ -183,9 +188,9 @@ $(document).ready(function(){
 		         data: JSON.stringify(jsonreq),
 		         contentType: "application/json",
 		         success: function (data) {
-		        	if(data!=null && data.lengt==0){
+		        	if(data!=null){
 		        		$('.loading-spinner').css("display","none");
-		   					        		
+		        		tableListAdd(data);		        		
 		        	}		        	
 		        	else{
 		        		$('.loading-spinner').css("display","none");
@@ -205,6 +210,384 @@ $(document).ready(function(){
 		     });
 		    
 	}
+	  
+	  function tableListAdd(data){
+          var table = $("#myTable").dataTable({
+              destroy: !0,
+              data: data,
+              "dom": 'Bfrtip',
+     		 "buttons": [
+         		 {	extend:'excel',
+         		    className: 'btn btn-primary',
+                     text: 'Verileri Excele Aktar',
+     	         },
+             ],
+             "language":{
+             	"emptyTable": "Tabloda herhangi bir veri mevcut değil",
+             	"info": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
+             	"infoEmpty": "Kayıt Bulunamadı",
+             	 "search": "Ara:",
+             	    "zeroRecords": "Eşleşen kayıt bulunamadı",
+             	 "paginate": {
+             	        "first": "İlk",
+             	        "last": "Son",
+             	        "next": "Sonraki",
+             	        "previous": "Önceki"
+             	    },
+             },
+              columns: [
+                  { data: "",
+                	  render:function (e, t, n){
+                		  var ret;
+                		  if(n!=null){               			  
+                				const empName=n.split("-");
+                				ret=empName[0];
+                		  }
+                		  return ret;
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  var ret;
+                			  if(n.includes("01")){
+                				  ret="X";
+                			  }else{ret="-";}           			  
+                		  }
+                		  return ret;
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("02")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("03")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;             			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("04")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("05")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("06")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;               			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("07")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("08")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("09")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("10")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;               			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("11")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;                			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("12")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("13")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;               			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("14")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;                			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("15")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;                			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("16")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("17")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;             			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("18")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("19")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("20")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("21")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;               			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("22")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("23")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("24")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("25")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("26")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("27")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("28")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("29")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("30")){
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;              			  
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  if(n.includes("31")){	
+                				  ret="X";
+                			  }else{ret="-";} 
+                		  }
+                		  return ret;               			  
+                	  }
+                  },
+                  { data: "shift",
+                	  render:function (e, t, n){
+                		const shift=n.split("-");
+                		for(var i=0;i<shift.length;i++){
+                			const _shift=shift[i];
+                			if(_shift.includes("shift:")){
+                				const num=shift[i].split(":");                			
+	                			  return num[1];
+                			}	
+                		}
+                		return "0";
+                	  }
+                  },
+                  { data: "cuts",
+                	  render:function (e, t, n){
+                		  const cuts=n.split("-");
+                  		for(var i=0;i<cuts.length;i++){
+                  			const _cuts=cuts[i];
+                  			if(_cuts.includes("cuts:")){
+                  				const num=cuts[i].split(":");                 				 
+  	                			  return num[1];
+                  			}	
+                  		}
+                  		return "0";
+                  	  }
+                  }
+            
+              ],
+              columnDefs: [{ targets: "_all", defaultContent: "" }],
+          });
+       }
 	  function sendAjaxGetPeriodCount(jsonreq){
 		  $.ajax({
 		     	url: "/getPeriodCount",
@@ -691,7 +1074,6 @@ $(document).ready(function(){
                     <thead>
                       <tr class="text-nowrap">
                         <th>#</th>
-                         <th></th>
 	                 <th>1</th>
 	                  <th>2</th>
 	                   <th>3</th>
@@ -723,7 +1105,8 @@ $(document).ready(function(){
 	                                      <th>29</th>
 	                                      <th>30</th>
 	                                      <th>31</th>
-	                                      <th>Mesai</th>
+	                                      <th>Mesai(Saat)</th>
+	                                       <th>Kesinti(Saat)</th>
 	           
                       </tr>
                     </thead>

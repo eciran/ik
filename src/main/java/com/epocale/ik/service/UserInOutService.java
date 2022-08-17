@@ -41,10 +41,9 @@ public class UserInOutService {
 		EmployeesEntitiy employee=employeesRepository.findEmployeeByEmployeeId(userList.get(0));
 		UserInOutEntity userInOut=new UserInOutEntity();
 		if (employee!=null) {
-			int shift=0;
+			Integer[] sch;
 			if(employee.getEmployeeSecondName()==null) {
-				try {
-					
+				try {		
 					userList.set(3,userList.get(3).replace(".","-"));
 					userInOut.setEmployeeCode(employee);
 					userInOut.setCheckInTime(userList.get(3));
@@ -53,14 +52,16 @@ public class UserInOutService {
 					userInOut.setMonth(month);
 					userInOut.setYear(year);
 					if(userList.size()>6) {
-						shift=this.calculateShift(userList.get(5),userList.get(8),userList.get(4));
-						userInOut.setShift(shift);
+						sch=this.calculateShift(userList.get(5),userList.get(8),userList.get(4));
+						userInOut.setShift(sch[0]);
+						userInOut.setCuts(sch[1]);
 						userList.set(6,userList.get(6).replace(".","-"));
 						userInOut.setCheckOutTime(userList.get(6));
 						userInOut.setCheckOutHour(userList.get(8));
 					}
 					else {
 						userInOut.setShift(99999);
+						userInOut.setCuts(99999);
 						userInOut.setCheckOutTime("-");
 						userInOut.setCheckOutHour("-");
 					}
@@ -84,14 +85,16 @@ public class UserInOutService {
 					userInOut.setMonth(month);
 					userInOut.setYear(year);
 					if(userList.size()>7) {
-						shift=this.calculateShift(userList.get(6),userList.get(9), userList.get(5));
-						userInOut.setShift(shift);
+						sch=this.calculateShift(userList.get(6),userList.get(9), userList.get(5));
+						userInOut.setShift(sch[0]);
+						userInOut.setCuts(sch[1]);
 						userList.set(7,userList.get(7).replace(".","-"));
 						userInOut.setCheckOutTime(userList.get(7));
 						userInOut.setCheckOutHour(userList.get(9));
 					}
 					else {
 						userInOut.setShift(99999);
+						userInOut.setCuts(99999);
 						userInOut.setCheckOutTime("-");
 						userInOut.setCheckOutHour("-");
 					}
@@ -102,6 +105,7 @@ public class UserInOutService {
 						System.out.println("Kayıt eklenemedi");
 					}
 				} catch (Exception e) {
+					ret=userList.get(0)+" Nolu kullanıcının Veri Ekleme Hatası";
 					System.out.println("Giriş Çıkış Kaydı Bulunamadı");
 				}
 			}
@@ -120,7 +124,7 @@ public class UserInOutService {
 	}
 
 
-	public String updatePuantajLine(OperationModel operation) throws Throwable {
+	public String addInOutLine(OperationModel operation) throws Throwable {
 	  String ret="";
 	  try {
 			userInOutRepository.deletePeriod(operation.getMonth(), operation.getYear());
@@ -217,6 +221,10 @@ public class UserInOutService {
 	public List<UserInOutEntity> getInOutList(OperationModel operation) {
 		return userInOutRepository.findAllByMonthAndYear(operation.getMonth(),operation.getYear());
 	}
+	
+	public List<UserInOutEntity> getListEmpCodeAndInTime(OperationModel operation) {
+		return userInOutRepository.findAllByMonthAndYear(operation.getMonth(),operation.getYear());
+	}
 
 
 	public String getPeriodCount(OperationModel op) {
@@ -225,8 +233,10 @@ public class UserInOutService {
 		return userInOutRepository.getPeriodCount(month,year);
 	}
 	
-	public int calculateShift(String in_hour, String out_hour, String in_date) {
+	public Integer[] calculateShift(String in_hour, String out_hour, String in_date) {
+		Integer[] ret=new Integer[2];
 		int shift=0;
+		int cuts=0;
 		int _in_hour=450;
 		int _out_hour=1080;
 		if(in_hour.contains(":")&&out_hour.contains(":")) {
@@ -236,22 +246,22 @@ public class UserInOutService {
 				int _inTime=Integer.parseInt(external_in_time[0])*60+Integer.parseInt(external_in_time[1]);			
 				int _outTime=Integer.parseInt(external_out_time[0])*60+Integer.parseInt(external_out_time[1]);
 				if(in_date.equals("Cmt") || in_date.equals("Paz")) {
-					int deger=_outTime-_inTime;
-					shift+=deger;
+					double deger=_outTime-_inTime;
+					shift+=Math.round(deger/60);;
 				}
 				else {
 					if(_inTime>_in_hour) {
-						int deger=_inTime-_in_hour;
-						shift-=deger;
+						double deger=_inTime-_in_hour;
+						cuts+=Math.round(deger/60);;
 					}
 					if(_outTime>_out_hour){
-						int deger=_outTime-_out_hour;
-						shift+=deger;
+						double deger=_outTime-(_out_hour-30);
+						shift+=Math.round(deger/60);;
 					}
 					else if(_outTime<_out_hour){
 						if(!(_outTime>=(_out_hour-30))) {
-							int deger=_out_hour-(_outTime-30);
-							shift-=deger;
+							double deger=(_out_hour-30)-_outTime;
+							cuts+=Math.round(deger/60);
 						}
 					}					
 					System.out.println("Shift:"+shift);
@@ -262,6 +272,8 @@ public class UserInOutService {
 		}else {
 			System.out.println("Shift:"+shift);
 		}	
-		return shift;
+		ret[0]=shift;
+		ret[1]=cuts;
+		return ret;
 	}
 }

@@ -39,4 +39,16 @@ public class EmployeeService {
 		return employeesRepository.findAll();
 
 	}
+
+	public String updateEmployee(EmployeesEntitiy employee) {
+		String ret="";
+		try {
+			employeesRepository.save(employee);
+			ret="Success";
+		} catch (Exception e) {
+			e.printStackTrace();
+			ret="Failed";
+		}
+		return ret;
+	}
 }
