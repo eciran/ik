@@ -233,7 +233,7 @@ public class UserInOutService {
 		return userInOutRepository.getPeriodCount(month,year);
 	}
 	
-	public Integer[] calculateShift(String in_hour, String out_hour, String in_date) {
+	private Integer[] calculateShift(String in_hour, String out_hour, String in_date) {
 		Integer[] ret=new Integer[2];
 		int shift=0;
 		int cuts=0;
@@ -247,12 +247,12 @@ public class UserInOutService {
 				int _outTime=Integer.parseInt(external_out_time[0])*60+Integer.parseInt(external_out_time[1]);
 				if(in_date.equals("Cmt") || in_date.equals("Paz")) {
 					double deger=_outTime-_inTime;
-					shift+=Math.round(deger/60);;
+					shift+=Math.round(deger/60);
 				}
 				else {
 					if(_inTime>_in_hour) {
 						double deger=_inTime-_in_hour;
-						cuts+=Math.round(deger/60);;
+						cuts+=Math.round(deger/60);
 					}
 					if(_outTime>_out_hour){
 						double deger=_outTime-(_out_hour-30);

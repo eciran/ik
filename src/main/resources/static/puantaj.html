@@ -212,6 +212,9 @@ $(document).ready(function(){
 	}
 	  
 	  function tableListAdd(data){
+		  var hs=data[data.length-1];
+		  delete data[data.length-1];
+		  data.length=data.length-1;
           var table = $("#myTable").dataTable({
               destroy: !0,
               data: data,
@@ -239,9 +242,9 @@ $(document).ready(function(){
                   { data: "",
                 	  render:function (e, t, n){
                 		  var ret;
-                		  if(n!=null){               			  
+                		  if(n!=null){ 
                 				const empName=n.split("-");
-                				ret=empName[0];
+                					ret=empName[0];                				
                 		  }
                 		  return ret;
                 	  }
@@ -252,309 +255,742 @@ $(document).ready(function(){
                 			  var ret;
                 			  if(n.includes("01")){
                 				  ret="X";
-                			  }else{ret="-";}           			  
-                		  }
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("01"))
+                			  {
+                				  if(n.includes("01")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
                 		  return ret;
+                		  }
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
+                			  if(n.includes("01")){
+                				  ret="X";
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("01"))
+                			  {
+                				  if(n.includes("01")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
+                		  }
+                	  }
+                  },
+                  { data: "",
+                	  render:function (e, t, n){
+                		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("02")){
                 				  ret="X";
-                			  }else{ret="-";} 
-                		  }
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("02"))
+                			  {
+                				  if(n.includes("02")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
                 		  return ret;
+                		  }
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("03")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("03"))
+                			  {
+                				  if(n.includes("03")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;             			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("04")){
                 				  ret="X";
-                			  }else{ret="-";} 
-                		  }
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("04"))
+                			  {
+                				  if(n.includes("04")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
                 		  return ret;
+                		  }
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("05")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("05"))
+                			  {
+                				  if(n.includes("05")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("06")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("06"))
+                			  {
+                				  if(n.includes("06")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;               			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("07")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("07"))
+                			  {
+                				  if(n.includes("07")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("08")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("08"))
+                			  {
+                				  if(n.includes("08")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("09")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("09"))
+                			  {
+                				  if(n.includes("09")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
-                			  if(n.includes("10")){
-                				  ret="X";
-                			  }else{ret="-";} 
-                		  }
-                		  return ret;               			  
-                	  }
-                  },
-                  { data: "",
-                	  render:function (e, t, n){
-                		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("11")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("11"))
+                			  {
+                				  if(n.includes("11")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;                			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("12")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("12"))
+                			  {
+                				  if(n.includes("12")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("13")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("13"))
+                			  {
+                				  if(n.includes("13")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;               			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("14")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("14"))
+                			  {
+                				  if(n.includes("14")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;                			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("15")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("15"))
+                			  {
+                				  if(n.includes("15")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;                			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("16")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("16"))
+                			  {
+                				  if(n.includes("16")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("17")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("17"))
+                			  {
+                				  if(n.includes("17")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;             			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("18")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("18"))
+                			  {
+                				  if(n.includes("18")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("19")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("19"))
+                			  {
+                				  if(n.includes("19")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("20")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("20"))
+                			  {
+                				  if(n.includes("20")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("21")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("21"))
+                			  {
+                				  if(n.includes("21")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;               			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("22")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("22"))
+                			  {
+                				  if(n.includes("22")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("23")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("23"))
+                			  {
+                				  if(n.includes("23")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("24")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("24"))
+                			  {
+                				  if(n.includes("24")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("25")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("25"))
+                			  {
+                				  if(n.includes("25")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("26")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("26"))
+                			  {
+                				  if(n.includes("26")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("27")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("27"))
+                			  {
+                				  if(n.includes("27")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("28")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("28"))
+                			  {
+                				  if(n.includes("28")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("29")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("29"))
+                			  {
+                				  if(n.includes("29")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
+                			  var ret;
                 			  if(n.includes("30")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("30"))
+                			  {
+                				  if(n.includes("30")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;              			  
                 	  }
                   },
                   { data: "",
                 	  render:function (e, t, n){
                 		  if(n!=null){
-                			  if(n.includes("31")){	
+                			  var ret;
+                			  if(n.includes("31")){
                 				  ret="X";
-                			  }else{ret="-";} 
+                			  }
+                			  else{
+                				  ret="-";              				 
+                			  }
+                			  if(hs.includes("31"))
+                			  {
+                				  if(n.includes("31")){
+                					  ret="HS-X";  
+                				  } 
+                				  else{
+                					  ret="HS";  
+                				  }
+                				  
+                			  }
+                		  return ret;
                 		  }
-                		  return ret;               			  
                 	  }
                   },
                   { data: "shift",
